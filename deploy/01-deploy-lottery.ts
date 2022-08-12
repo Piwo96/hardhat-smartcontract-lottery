@@ -20,7 +20,7 @@ const deployLottery: DeployFunction = async function (
         networkConfig[chainId].blockConfirmations || 1;
     if (developmentChains.includes(chainName)) {
         const vrfCoordinatorV2 = await ethers.getContract(
-            "MockVrfCoordinatorV2"
+            "VRFCoordinatorV2Mock"
         );
         vrfCoordinatorV2Address = vrfCoordinatorV2.address;
         const transactionResponse = await vrfCoordinatorV2.createSubscription();
@@ -46,6 +46,7 @@ const deployLottery: DeployFunction = async function (
         vrfCoordinatorV2Address,
         entranceFee,
         gasLane,
+        subscriptionId,
         callbackGasLimit,
         interval,
     ];
@@ -58,14 +59,15 @@ const deployLottery: DeployFunction = async function (
     });
 
     log("Lottery deployed!");
-    log("---------------------------------------------");
 
     if (
         !developmentChains.includes(chainName) &&
         process.env.ETHERSCAN_API_KEY
     ) {
+        log("Verifying ...");
         await verify(lottery.address, args);
     }
+    log("---------------------------------------------");
 };
 
 export default deployLottery;

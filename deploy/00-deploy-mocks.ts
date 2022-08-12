@@ -20,8 +20,8 @@ const deployMocks: DeployFunction = async function (
 
     if (developmentChains.includes(chainName)) {
         log("Local network detected! Deploying mocks ...");
-        await deploy("MockVrfCoordinatorV2", {
-            contract: "MockVrfCoordinatorV2",
+        await deploy("VRFCoordinatorV2Mock", {
+            contract: "VRFCoordinatorV2Mock",
             from: deployer,
             log: true,
             args: [BASE_FEE, GAS_PRICE_LINK],
