@@ -2,6 +2,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { networkConfig, developmentChains } from "../helper-hardhat-config";
+import { verify } from "../utils/verify";
 
 const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("30");
 
@@ -48,7 +49,7 @@ const deployLottery: DeployFunction = async function (
         callbackGasLimit,
         interval,
     ];
-    await deploy("Lottery", {
+    const lottery = await deploy("Lottery", {
         contract: "Lottery",
         from: deployer,
         log: true,
@@ -58,6 +59,13 @@ const deployLottery: DeployFunction = async function (
 
     log("Lottery deployed!");
     log("---------------------------------------------");
+
+    if (
+        !developmentChains.includes(chainName) &&
+        process.env.ETHERSCAN_API_KEY
+    ) {
+        await verify(lottery.address, args);
+    }
 };
 
 export default deployLottery;
