@@ -37,7 +37,9 @@ const deployLottery: DeployFunction = async function (
         subscriptionId = networkConfig[chainId].subscriptionId!;
     }
 
-    const entranceFee = networkConfig[chainId].entranceFee;
+    const entranceFee = ethers.utils.parseEther(
+        networkConfig[chainId].entranceFee!
+    );
     const gasLane = networkConfig[chainId].gasLane;
     const callbackGasLimit = networkConfig[chainId].callbackGasLimit!;
     const interval = networkConfig[chainId].interval;
