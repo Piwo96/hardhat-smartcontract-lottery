@@ -154,7 +154,7 @@ contract Lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         return s_players[index];
     }
 
-    function getRecentwinner() public view returns (address) {
+    function getRecentWinner() public view returns (address) {
         return s_recentWinner;
     }
 
