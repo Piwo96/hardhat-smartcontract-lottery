@@ -72,7 +72,7 @@ import { BigNumber } from "ethers";
                 await network.provider.send("evm_increaseTime", [interval + 1]);
                 await network.provider.send("evm_mine", []);
                 const checkUpkeepRes = await lottery.callStatic.
-                checkUpkeep([]);
+                checkUpkeep("0x");
                 const upkeepNeeded = checkUpkeepRes[0];
                 assert(!upkeepNeeded);
             });
@@ -82,9 +82,29 @@ import { BigNumber } from "ethers";
                 await network.provider.send("evm_increaseTime", [interval + 1]);
                 await network.provider.send("evm_mine", []);
                 await lottery.performUpkeep([]);
+                const lotteryState = await lottery.getLotteryState();
+                const checkUpkeepRes = await lottery.callStatic.checkUpkeep([]);
+                const upkeepNeeded = checkUpkeepRes[0];
+                assert.equal(lotteryState.toString(), "1");
+                assert(!upkeepNeeded);
+            });
+
+            it("Returns false if not enough time has passed", async function(){
+                await lottery.enterLottery({value: entranceFee});
+                await network.provider.send("evm_increaseTime", [interval - 2]);
+                await network.provider.send("evm_mine", []);
                 const checkUpkeepRes = await lottery.callStatic.checkUpkeep([]);
                 const upkeepNeeded = checkUpkeepRes[0];
                 assert(!upkeepNeeded);
+            });
+
+            it("Returns true when player entered, open, time has passed, eth", async function() {
+                await lottery.enterLottery({value: entranceFee});
+                await network.provider.send("evm_increaseTime", [interval + 1]);
+                await network.provider.send("evm_mine", []);
+                const checkUpkeepRes = await lottery.callStatic.checkUpkeep("0x");
+                const upkeepNeeded = checkUpkeepRes[0];
+                assert(upkeepNeeded);
             });
           });
       });
