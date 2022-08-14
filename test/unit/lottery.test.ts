@@ -12,7 +12,10 @@ import { BigNumber } from "ethers";
           let vrfMock: VRFCoordinatorV2Mock;
           let deployer: SignerWithAddress;
           let entranceFee: BigNumber;
+<<<<<<< HEAD
           let interval: number;
+=======
+>>>>>>> 5032a24 (Added features)
           this.beforeEach(async function () {
               const accounts = await ethers.getSigners();
               deployer = accounts[0];
@@ -23,7 +26,10 @@ import { BigNumber } from "ethers";
                   deployer
               );
               entranceFee = await lottery.getEntranceFee();
+<<<<<<< HEAD
               interval = (await lottery.getInterval()).toNumber();
+=======
+>>>>>>> 5032a24 (Added features)
           });
 
           describe("constructor", function () {
@@ -38,7 +44,11 @@ import { BigNumber } from "ethers";
               });
           });
 
+<<<<<<< HEAD
           describe("enterLottery", function () {
+=======
+          describe("enterLottery", async function () {
+>>>>>>> 5032a24 (Added features)
               it("Should be reverted when fee to low", async function () {
                   await expect(
                       lottery.enterLottery()
@@ -48,6 +58,7 @@ import { BigNumber } from "ethers";
                   );
               });
 
+<<<<<<< HEAD
               it("Should store players that entered", async function(){
                 await lottery.enterLottery({value: entranceFee});
                 const playerFromContract = await lottery.getPlayer(0);
@@ -65,6 +76,23 @@ import { BigNumber } from "ethers";
                 await lottery.performUpkeep([]);
                 await expect(lottery.enterLottery({value: entranceFee})).to.be.revertedWithCustomError(lottery, "Lottery__LotteryNotOpen");
               });
+=======
+              it("Stores players", async function () {
+                  await lottery.enterLottery({
+                      value: entranceFee,
+                  });
+                  const playerFromContract = await lottery.getPlayer(0);
+                  assert.equal(playerFromContract, deployer.address);
+              });
+
+              it("Emits evet on enter", async function () {
+                  await expect(
+                      lottery.enterLottery({ value: entranceFee })
+                  ).to.emit(lottery, "LotteryEnter");
+              });
+
+              it("Does not allow entrance when lottery is calculating", async function () {});
+>>>>>>> 5032a24 (Added features)
           });
 
           describe("checkUpkeep", function(){
