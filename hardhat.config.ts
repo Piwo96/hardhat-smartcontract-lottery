@@ -28,7 +28,7 @@ const config: HardhatUserConfig = {
         apiKey: ETHERSCAN_API_KEY,
     },
     gasReporter: {
-        enabled: true, // wenn man gerade nicht das Gas prüft kann es ausgeschaltet werden
+        enabled: false, // wenn man gerade nicht das Gas prüft kann es ausgeschaltet werden
         outputFile: "gas-report.txt", // optional
         noColors: true, // optional
         currency: "USD", // optional; API Key von CoinMarketCap

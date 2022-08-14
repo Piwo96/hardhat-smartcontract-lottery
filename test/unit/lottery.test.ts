@@ -12,6 +12,7 @@ import { BigNumber } from "ethers";
           let lottery: Lottery;
           let vrfMock: VRFCoordinatorV2Mock;
           let deployer: SignerWithAddress;
+          let entranceFee: BigNumber;
           this.beforeEach(async function () {
               chainId = network.config.chainId!;
               const accounts = await ethers.getSigners();
@@ -22,6 +23,7 @@ import { BigNumber } from "ethers";
                   "VRFCoordinatorV2Mock",
                   deployer
               );
+              entranceFee = await lottery.getEntranceFee();
           });
 
           describe("constructor", async function () {
@@ -42,11 +44,6 @@ import { BigNumber } from "ethers";
           });
 
           describe("enterLottery", async function () {
-              let entranceFee: string;
-              this.beforeEach(async function () {
-                  entranceFee = networkConfig[chainId].entranceFee!;
-              });
-
               it("Should be reverted when fee to low", async function () {
                   await expect(
                       lottery.enterLottery()
@@ -55,5 +52,21 @@ import { BigNumber } from "ethers";
                       "Lottery__NotEnoughEthEntered"
                   );
               });
+
+              it("Stores players", async function () {
+                  await lottery.enterLottery({
+                      value: entranceFee,
+                  });
+                  const playerFromContract = await lottery.getPlayer(0);
+                  assert.equal(playerFromContract, deployer.address);
+              });
+
+              it("Emits evet on enter", async function () {
+                  await expect(
+                      lottery.enterLottery({ value: entranceFee })
+                  ).to.emit(lottery, "LotteryEnter");
+              });
+
+              it("Does not allow entrance when lottery is calculating", async function () {});
           });
       });
