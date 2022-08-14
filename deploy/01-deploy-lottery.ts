@@ -3,6 +3,7 @@ import { ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { networkConfig, developmentChains } from "../helper-hardhat-config";
 import { verify } from "../utils/verify";
+import { VRFCoordinatorV2Mock } from "../typechain-types";
 
 const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("30");
 
@@ -61,6 +62,13 @@ const deployLottery: DeployFunction = async function (
     });
 
     log("Lottery deployed!");
+
+    if(developmentChains.includes(chainName)){
+        const vrfCoordinatorV2 = await ethers.getContract(
+            "VRFCoordinatorV2Mock"
+        );
+        await vrfCoordinatorV2.addConsumer(subscriptionId, lottery.address);
+    }
 
     if (
         !developmentChains.includes(chainName) &&
