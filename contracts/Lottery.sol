@@ -98,10 +98,10 @@ contract Lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         )
     {
         bool isOpen = LotteryState.OPEN == s_lotteryState;
-        bool timePassed = (block.timestamp - s_lastTimeStamp) > i_interval;
-        bool hasPlayers = (s_players.length > 0);
-        bool hasBalance = (address(this).balance != 0);
-        upkeepNeeded = (isOpen && timePassed && hasPlayers && hasBalance);
+        bool timePassed = ((block.timestamp - s_lastTimeStamp) > i_interval);
+        bool hasPlayers = s_players.length > 0;
+        bool hasBalance = address(this).balance > 0;
+        upkeepNeeded = (timePassed && isOpen && hasBalance && hasPlayers);
         return (upkeepNeeded, "0x0");
     }
 
