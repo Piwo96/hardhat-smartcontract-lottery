@@ -11,7 +11,11 @@ const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || "adsf";
 
 const config: HardhatUserConfig = {
     solidity: {
-        compilers: [{ version: "0.8.9" }, { version: "0.8.4" }],
+        compilers: [
+            { version: "0.8.9" },
+            { version: "0.8.4" },
+            { version: "0.8.0" },
+        ],
     },
     defaultNetwork: "hardhat",
     networks: {
@@ -44,8 +48,8 @@ const config: HardhatUserConfig = {
         },
     },
     mocha: {
-        timeout: 300000
-    }
+        timeout: 300000,
+    },
 };
 
 export default config;
