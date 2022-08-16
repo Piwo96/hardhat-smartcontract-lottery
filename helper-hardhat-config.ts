@@ -26,7 +26,7 @@ export const networkConfig: INetworkConfigInfo = {
         interval: "30",
     },
     31337: {
-        name: "hardhat",
+        name: "localhost",
         blockConfirmations: 1,
         entranceFee: "0.01",
         gasLane:
