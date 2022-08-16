@@ -2,7 +2,7 @@ import { ethers, network } from "hardhat";
 import { BigNumber, Contract } from "ethers";
 import { Lottery__factory } from "../typechain-types";
 
-async function mookKeeper() {
+async function mockKeeper() {
     const lottery = await ethers.getContract("Lottery");
     const { upkeepNeeded } = await lottery.callStatic.checkUpkeep("0x");
     if (upkeepNeeded) {
@@ -31,7 +31,7 @@ async function mockVrf(requestId: number, lottery: Contract) {
     console.log(`The winner is: ${recentWinner}`);
 }
 
-mookKeeper()
+mockKeeper()
     .then(() => process.exit(0))
     .catch((error) => {
         console.log(error);
