@@ -34,11 +34,27 @@ async function updateContractAddresses() {
 }
 
 async function updateAbi() {
-    const lottery = await ethers.getContract("Lottery");
-    const enc = new TextEncoder();
-    const abi = lottery.interface.format(ethers.utils.FormatTypes.json);
-    const encodedAbi = enc.encode(abi.toString());
-    fs.writeFileSync(FRONT_END_ABI_FILE, encodedAbi);
+    const abi: string = await getAbiFromBuild();
+    fs.writeFileSync(FRONT_END_ABI_FILE, abi);
+}
+
+async function getAbiFromBuild(): Promise<string> {
+    console.log("Reading ABI ...");
+    const lotteryPath = "artifacts/contracts/Lottery.sol/Lottery.json";
+    return new Promise<string>((resolve, reject) => {
+        fs.readFile(lotteryPath, "utf-8", (err, data) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                console.log("Parsing ABI ...");
+                const obj = JSON.parse(data);
+                const abi = JSON.stringify(obj.abi);
+                console.log(obj.abi);
+                resolve(abi);
+            }
+        });
+    });
 }
 
 export default updateUi;
